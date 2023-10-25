@@ -1,0 +1,7 @@
+{
+  "name": "LancerIn-ProjectUAS",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
