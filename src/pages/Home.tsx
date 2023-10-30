@@ -1,5 +1,6 @@
-import { IonCol, IonContent, IonGrid, IonHeader, IonInput, IonPage, IonRow, IonText, IonTextarea, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonPage, IonRow, IonText, IonTextarea, IonTitle, IonToolbar } from '@ionic/react';
 import './Home.css';
+import { camera, paperPlane, send } from 'ionicons/icons';
 
 const Home: React.FC = () => {
   return (
@@ -28,6 +29,25 @@ const Home: React.FC = () => {
                 maxlength={1000}
                 counterFormatter={(inputLength, maxLength) => `${maxLength - inputLength} characters remaining`}
               ></IonTextarea>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol id='photoSection'>
+              <IonCard>
+                <IonCardContent>No photo selected</IonCardContent>
+                <IonButton fill='clear'>
+                  <IonIcon icon={camera} slot="start" />
+                  Take Photo
+                </IonButton>
+              </IonCard>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol id='postingBtn'>
+              <IonButton>
+                <IonIcon icon={paperPlane} slot="start" />
+                Posting
+              </IonButton>
             </IonCol>
           </IonRow>
         </IonGrid>

@@ -23,37 +23,35 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import Calendar from './pages/Calendar';
+import DatasContext from './data/data-context';
+import DatasContextProvider from './data/DataContextProvider';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/calendar">
-            <Calendar />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot='bottom'>
-          <IonTabButton tab="home" href="/home">
-            <IonIcon icon={home} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab='calendar' href='/calendar'>
-            <IonIcon icon={calendar} />
-            <IonLabel>Calendar</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
+      <DatasContextProvider>
+        <IonTabs>
+          <IonRouterOutlet id='main'>
+            <Route exact path="/home" component={Home} />
+            <Route exact path="/calendar" component={Calendar} />
+            <Redirect exact from="/" to="/home" />
+          </IonRouterOutlet>
+          <IonTabBar slot='bottom'>
+            <IonTabButton tab="home" href="/home">
+              <IonIcon icon={home} />
+              <IonLabel>Home</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab='calendar' href='/calendar'>
+              <IonIcon icon={calendar} />
+              <IonLabel>Calendar</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </DatasContextProvider>
     </IonReactRouter>
-  </IonApp>
+  </IonApp >
 );
 
 export default App;

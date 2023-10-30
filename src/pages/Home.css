@@ -16,3 +16,13 @@
 #inputText {
   padding: 0.8rem;
 }
+
+#postingBtn {
+  display: flex;
+  justify-content: center;
+}
+
+#photoSection {
+  display: flex;
+  justify-content: center;
+}

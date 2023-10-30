@@ -1,0 +1,5 @@
+#imageCard {
+  object-fit: cover;
+  height: 20rem;
+  width: auto;
+}
