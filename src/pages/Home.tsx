@@ -1,8 +1,19 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonPage, IonRow, IonText, IonTextarea, IonTitle, IonToolbar } from '@ionic/react';
 import './Home.css';
 import { camera, paperPlane, send } from 'ionicons/icons';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 const Home: React.FC = () => {
+  const takePhotoHandler = async() => {
+    const image = Camera.getPhoto({
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Camera,
+      quality: 80,
+      width: 600
+    });
+    console.log(image);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -35,7 +46,7 @@ const Home: React.FC = () => {
             <IonCol id='photoSection'>
               <IonCard>
                 <IonCardContent>No photo selected</IonCardContent>
-                <IonButton fill='clear'>
+                <IonButton fill='clear' onClick={takePhotoHandler}>
                   <IonIcon icon={camera} slot="start" />
                   Take Photo
                 </IonButton>
