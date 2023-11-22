@@ -10,12 +10,23 @@ const DatasContextProvider: React.FC<DataContextProps> = props => {
 
     const [notes, setNotes] = useState<notes[]>([]);
 
-    const addNote = (note: notes) => {
-
-    }
+    const addNote = (path: string, base64Url: string, content: string, createdAt: Date) => {
+        const newNote: notes = {
+            id: Math.random().toString(),
+            content,
+            createdAt,
+            imagePath: path,
+            base64Url: base64Url
+        }
+        setNotes(curNotes => {
+            return [...curNotes, newNote]
+        });
+    };
 
     const deleteNote = (id: string) => {
-
+        setNotes(curNotes => {
+            return curNotes.filter(note => note.id !== id)
+        })
     }
 
     return (

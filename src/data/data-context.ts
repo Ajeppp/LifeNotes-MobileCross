@@ -4,13 +4,13 @@ export interface notes {
     id: string;
     createdAt: Date;
     content: string;
-    photo: string;
+    imagePath: string;
+    base64Url: string;
 }
-
 
 interface DatasContext {
     notes: notes[];
-    addNote: (note: notes) => void;
+    addNote: (path: string, base64Url: string, content: string, createdAt: Date) => void;
     deleteNote: (id: string) => void;
 }
 

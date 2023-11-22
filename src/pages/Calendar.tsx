@@ -17,7 +17,7 @@ const Calendar: React.FC = () => {
             <IonContent>
                 <IonGrid>
                     <IonRow>
-                        <IonCol>
+                        <IonCol id="calenderSection">
                             <IonDatetime presentation="date"></IonDatetime>
                         </IonCol>
                     </IonRow>

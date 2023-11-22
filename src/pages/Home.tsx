@@ -4,14 +4,14 @@ import { camera, paperPlane, send } from 'ionicons/icons';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 const Home: React.FC = () => {
-  const takePhotoHandler = async() => {
+  const takePhotoHandle = async () => {
     const image = Camera.getPhoto({
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
       quality: 80,
-      width: 600
+      width: 500
     });
-    console.log(image);
+    console.log(image)
   };
 
   return (
@@ -46,7 +46,7 @@ const Home: React.FC = () => {
             <IonCol id='photoSection'>
               <IonCard>
                 <IonCardContent>No photo selected</IonCardContent>
-                <IonButton fill='clear' onClick={takePhotoHandler}>
+                <IonButton fill='clear' onClick={takePhotoHandle}>
                   <IonIcon icon={camera} slot="start" />
                   Take Photo
                 </IonButton>
