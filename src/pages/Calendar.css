@@ -3,3 +3,8 @@
   height: 20rem;
   width: auto;
 }
+
+#calenderSection {
+  display: flex;
+  justify-content: center;
+}
