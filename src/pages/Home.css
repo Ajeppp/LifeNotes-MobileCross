@@ -26,3 +26,9 @@
   display: flex;
   justify-content: center;
 }
+
+#photoCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

@@ -2,17 +2,61 @@ import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, Ion
 import './Home.css';
 import { camera, paperPlane, send } from 'ionicons/icons';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { Directory, Filesystem } from '@capacitor/filesystem';
+import { base64FromPath } from '@ionic/react-hooks/filesystem';
+import DatasContext from '../data/data-context';
+import { useHistory } from 'react-router';
 
 const Home: React.FC = () => {
+  const notesCtx = useContext(DatasContext);
+  const history = useHistory();
+
+  const today = new Date();
+
+  const [takenPhoto, setTakenPhoto] = useState<{
+    path: string;
+    preview: string;
+  }>();
+
+  const contentRef = useRef<HTMLIonTextareaElement>(null);
+
   const takePhotoHandle = async () => {
-    const image = Camera.getPhoto({
+    const photo = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
       quality: 80,
       width: 500
     });
-    console.log(image)
+    console.log(photo.path)
+
+    if (!photo || !photo.path || !photo.webPath) {
+      return;
+    }
+
+    setTakenPhoto({
+      path: photo.path,
+      preview: photo.webPath
+    });
   };
+
+  const addNotesHandler = async () => {
+    console.log('addNotesHandler');
+    const enteredText = contentRef.current?.value;
+    if (!enteredText || enteredText.toString().trim().length === 0 || !takenPhoto) {
+      return;
+    }
+    console.log(enteredText.toString());
+    const fileName = new Date().getTime() + '.jpeg';
+    const base64 = await base64FromPath(takenPhoto!.preview);
+    await Filesystem.writeFile({
+      path: fileName,
+      data: base64,
+      directory: Directory.Data
+    });
+    notesCtx.addNote(fileName, base64, enteredText.toString(), today.toISOString());
+    history.length > 0 ? history.goBack() : history.replace('/calender');
+  }
 
   return (
     <IonPage>
@@ -39,13 +83,15 @@ const Home: React.FC = () => {
                 counter={true}
                 maxlength={1000}
                 counterFormatter={(inputLength, maxLength) => `${maxLength - inputLength} characters remaining`}
+                ref={contentRef}
               ></IonTextarea>
             </IonCol>
           </IonRow>
           <IonRow>
             <IonCol id='photoSection'>
-              <IonCard>
-                <IonCardContent>No photo selected</IonCardContent>
+              <IonCard id='photoCard'>
+                {!takenPhoto && <IonCardContent>No photo selected</IonCardContent>}
+                {takenPhoto && <img src={takenPhoto.preview} alt="Preview" />}
                 <IonButton fill='clear' onClick={takePhotoHandle}>
                   <IonIcon icon={camera} slot="start" />
                   Take Photo
@@ -55,7 +101,7 @@ const Home: React.FC = () => {
           </IonRow>
           <IonRow>
             <IonCol id='postingBtn'>
-              <IonButton>
+              <IonButton onClick={addNotesHandler}>
                 <IonIcon icon={paperPlane} slot="start" />
                 Posting
               </IonButton>
