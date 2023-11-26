@@ -15,7 +15,7 @@ const Calendar: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Calendar</IonTitle>
+                    <IonTitle>Life Notes</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
@@ -41,7 +41,7 @@ const Calendar: React.FC = () => {
                                     <IonCardHeader>
                                         <IonCardSubtitle>{note.createdAt}</IonCardSubtitle>
                                     </IonCardHeader>
-                                    <IonImg id="imageCard" src="https://cdn.discordapp.com/attachments/951687755161800764/1126891866336538624/Seo_In_Ah.jpg?ex=654e46d5&is=653bd1d5&hm=20442e1d7e7dd662f9e4c3e9a17105ee1fa3e04201cb68abfc867af6086f4d55&" />
+                                    <img src={note.base64Url} alt="image" />
                                     <IonCardContent>
                                         {note.content}
                                     </IonCardContent>

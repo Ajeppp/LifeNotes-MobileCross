@@ -15,7 +15,7 @@ const Home: React.FC = () => {
   const today = new Date();
 
   const [takenPhoto, setTakenPhoto] = useState<{
-    path: string;
+    path: string | undefined;
     preview: string;
   }>();
 
@@ -30,7 +30,7 @@ const Home: React.FC = () => {
     });
     console.log(photo.path)
 
-    if (!photo || !photo.path || !photo.webPath) {
+    if (!photo || /*!photo.path ||*/ !photo.webPath) {
       return;
     }
 
@@ -46,7 +46,6 @@ const Home: React.FC = () => {
     if (!enteredText || enteredText.toString().trim().length === 0 || !takenPhoto) {
       return;
     }
-    console.log(enteredText.toString());
     const fileName = new Date().getTime() + '.jpeg';
     const base64 = await base64FromPath(takenPhoto!.preview);
     await Filesystem.writeFile({
@@ -55,14 +54,14 @@ const Home: React.FC = () => {
       directory: Directory.Data
     });
     notesCtx.addNote(fileName, base64, enteredText.toString(), today.toISOString());
-    history.length > 0 ? history.goBack() : history.replace('/calender');
+    history.length > 0 ? history.goBack() : history.replace("/home");
   }
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Life Notes</IonTitle>
+          <IonTitle>Add Notes</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
