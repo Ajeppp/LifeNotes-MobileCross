@@ -42,14 +42,14 @@ const App: React.FC = () => {
         {/* <DatasContextProvider> */}
         <IonTabs>
           <IonRouterOutlet id='main'>
-            <Route exact path="/home" component={Home} />
             <Route exact path="/calendar" component={Calendar} />
-            <Redirect exact from="/" to="/calendar" />
+            <Route exact path="/home" component={Home} />
+            <Redirect exact from="/" to="/home" />
           </IonRouterOutlet>
           <IonTabBar slot='bottom'>
             <IonTabButton tab="home" href="/home">
-              <IonIcon icon={add} />
-              <IonLabel>Add Note</IonLabel>
+              <IonIcon icon={home} />
+              <IonLabel>Home</IonLabel>
             </IonTabButton>
             <IonTabButton tab='calendar' href='/calendar'>
               <IonIcon icon={calendar} />

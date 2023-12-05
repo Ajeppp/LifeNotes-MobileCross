@@ -4,13 +4,63 @@ import { camera } from "ionicons/icons";
 
 // Import style css
 import './Calendar.css';
-import { useContext } from "react";
+import { MutableRefObject, useContext, useEffect, useRef, useState } from "react";
 import DatasContext from "../data/data-context";
+
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyABgQw6IggVJbEZP4elv685Xm8JjS5fQ-o",
+    authDomain: "life-notes-uas.firebaseapp.com",
+    projectId: "life-notes-uas",
+    storageBucket: "life-notes-uas.appspot.com",
+    messagingSenderId: "398144432472",
+    appId: "1:398144432472:web:4545c63e79ab36e96f5d2d",
+    measurementId: "G-1CHSYWBDBE"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const storage = getStorage(app);
+
+type Note = {
+    id: string;
+    content: string;
+    base64Url: string;
+    createdAt: string;
+}
 
 
 const Calendar: React.FC = () => {
-    const notesCtx = useContext(DatasContext);
-    const notes = notesCtx.notes;
+    const today = new Date().toLocaleDateString('en-CA');
+
+    const [selectedDate, setSelectedDate] = useState<string>(today);
+    const [notes, setNotes] = useState<Note[]>([]);
+    const db = getFirestore();
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            const notesCollection = collection(db, 'notes');
+            const notesSnapshot = await getDocs(notesCollection);
+            const notesData: Note[] = [];
+            notesSnapshot.forEach((noteDoc) => {
+                const noteData = noteDoc.data();
+                notesData.push({
+                    id: noteDoc.id,
+                    content: noteData.content,
+                    base64Url: noteData.base64Url,
+                    createdAt: noteData.createdAt
+                });
+            });
+            setNotes(notesData.filter((note) => note.createdAt === selectedDate));
+        }
+        fetchNotes();
+    }, [selectedDate]);
+
     return (
         <IonPage>
             <IonHeader>
@@ -22,7 +72,13 @@ const Calendar: React.FC = () => {
                 <IonGrid>
                     <IonRow>
                         <IonCol id="calenderSection">
-                            <IonDatetime presentation="date"></IonDatetime>
+                            <IonDatetime presentation="date" onIonChange={e => {
+                                if (typeof e.detail.value === 'string') {
+                                    setSelectedDate(new Date(e.detail.value).toLocaleDateString('en-CA'));
+                                } else {
+                                    setSelectedDate('');
+                                }
+                            }} />
                         </IonCol>
                     </IonRow>
                     <IonRow>
