@@ -32,6 +32,7 @@ const storage = getStorage(app);
 
 const Home: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>();
+  const [photoUrl, setPhotoUrl] = useState<string>('');
   const notesCtx = useContext(DatasContext);
   const history = useHistory();
 
@@ -47,33 +48,32 @@ const Home: React.FC = () => {
   const contentRef = useRef<HTMLIonTextareaElement>(null);
 
   const takePhotoHandle = async () => {
-    const photo = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
-      source: CameraSource.Camera,
-      quality: 80,
-      width: 500
-    });
+    try {
+      const photo = await Camera.getPhoto({
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera,
+        quality: 80,
+        width: 500
+      });
 
-    const photoName = uuidv4();
+      if (!photo || !photo.webPath) {
+        return;
+      }
 
-    if (!photo || !photo.webPath) {
-      return;
-    }
+      const photoName = uuidv4();
 
-    setTakenPhoto({
-      path: photoName,
-      preview: photo.webPath
-    });
+      setTakenPhoto({
+        path: photoName,
+        preview: photo.webPath
+      });
 
-    if (photo && photoName) {
       const storageRef = ref(storage, `images/${photoName}`);
       const blob = await fetch(photo.webPath).then(r => r.blob());
       await uploadBytes(storageRef, blob);
       const url = await getDownloadURL(storageRef);
-      console.log(url);
-      addData(url);
-    } else {
-      console.log('photo or photoName is undefined');
+      setPhotoUrl(url);
+    } catch (error) {
+      console.log('error', error);
     }
   };
 
@@ -97,9 +97,14 @@ const Home: React.FC = () => {
     });
     notesCtx.addNote(fileName, base64, enteredText.toString(), date);
     history.length > 0 ? history.goBack() : history.replace("/home");
-
-    history.push('/calendar');
   }
+
+  useEffect(() => {
+    if (photoUrl) {
+      addData(photoUrl);
+      console.log('photoUrl: ', photoUrl);
+    }
+  }, [photoUrl]);
 
   // make addData to firebase
   const addData = async (url: string) => {
@@ -115,6 +120,7 @@ const Home: React.FC = () => {
     }
     contentRef.current!.value = '';
     setTakenPhoto(undefined);
+    history.push('/calendar');
   }
 
   return (

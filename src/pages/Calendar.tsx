@@ -9,7 +9,7 @@ import DatasContext from "../data/data-context";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore, onSnapshot } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
@@ -41,6 +41,15 @@ const Calendar: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<string>(today);
     const [notes, setNotes] = useState<Note[]>([]);
     const db = getFirestore();
+    const [dbUpdated, setDbUpdated] = useState<boolean>(false);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, 'notes'), () => {
+            setDbUpdated(prevState => !prevState);
+        });
+
+        return () => unsubscribe();
+    }, [db]);
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -59,7 +68,7 @@ const Calendar: React.FC = () => {
             setNotes(notesData.filter((note) => note.createdAt === selectedDate));
         }
         fetchNotes();
-    }, [selectedDate]);
+    }, [dbUpdated, selectedDate]);
 
     return (
         <IonPage>
