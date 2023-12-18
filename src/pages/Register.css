@@ -1,0 +1,44 @@
+#titleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+}
+
+#regisTitle {
+  font-size: 25px;
+  font-weight: bold;
+  color: #000000;
+}
+
+#Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+}
+
+#input {
+  width: 300px;
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+#loginBtn {
+  width: 250px;
+  border-radius: 5px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 17px;
+  margin-top: 10px;
+}
+
+#items {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+}

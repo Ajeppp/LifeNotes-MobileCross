@@ -25,7 +25,11 @@ import './theme/variables.css';
 import Calendar from './pages/Calendar';
 import DatasContext from './data/data-context';
 import DatasContextProvider from './data/DataContextProvider';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useHistory } from 'react-router-dom';
 
 setupIonicReact();
 
@@ -36,30 +40,43 @@ const App: React.FC = () => {
     initContext();
   }, [initContext]);
 
+  const location = window.location.pathname;
+
+  const [loading, setLoading] = useState(true);
+  const auth = getAuth();
+  const history = useHistory();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log('Auth state changed detected!')
+      if (user) {
+        console.log('User is logged in!');
+        history.push('/home');
+      } else {
+        console.log('User is not logged in!');
+        if (history.location.pathname !== '/register' && history.location.pathname !== '/login') {
+          history.push('/login');
+        }
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, [history]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <IonApp>
-      <IonReactRouter>
-        {/* <DatasContextProvider> */}
-        <IonTabs>
-          <IonRouterOutlet id='main'>
-            <Route exact path="/calendar" component={Calendar} />
-            <Route exact path="/home" component={Home} />
-            <Redirect exact from="/" to="/home" />
-          </IonRouterOutlet>
-          <IonTabBar slot='bottom'>
-            <IonTabButton tab="home" href="/home">
-              <IonIcon icon={home} />
-              <IonLabel>Home</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab='calendar' href='/calendar'>
-              <IonIcon icon={calendar} />
-              <IonLabel>Calendar</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
-        {/* </DatasContextProvider> */}
-      </IonReactRouter>
-    </IonApp >
+      <IonRouterOutlet id='main'>
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/calendar" component={Calendar} />
+        <Route exact path="/home" component={Home} />
+        <Redirect exact from="/" to="/login" />
+      </IonRouterOutlet>
+    </IonApp>
   )
 };
 

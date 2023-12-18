@@ -1,5 +1,5 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonDatetime, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react"
-import { camera } from "ionicons/icons";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonDatetime, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonPage, IonRouterOutlet, IonRow, IonTabBar, IonTabButton, IonTabs, IonTitle, IonToolbar } from "@ionic/react"
+import { calendar, camera, home } from "ionicons/icons";
 
 
 // Import style css
@@ -71,52 +71,66 @@ const Calendar: React.FC = () => {
     }, [dbUpdated, selectedDate]);
 
     return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Life Notes</IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent>
-                <IonGrid>
-                    <IonRow>
-                        <IonCol id="calenderSection">
-                            <IonDatetime presentation="date" onIonChange={e => {
-                                if (typeof e.detail.value === 'string') {
-                                    setSelectedDate(new Date(e.detail.value).toLocaleDateString('en-CA'));
-                                } else {
-                                    setSelectedDate('');
-                                }
-                            }} />
-                        </IonCol>
-                    </IonRow>
-                    <IonRow>
-                        <IonCol>
-                            {notes.length === 0 && (
-                                <IonCard>
-                                    <IonCardContent>
-                                        <IonCardTitle>
-                                            No Notes Found
-                                        </IonCardTitle>
-                                    </IonCardContent>
-                                </IonCard>
-                            )}
-                            {notes.map((note) => (
-                                <IonCard id="notesToday">
-                                    <IonCardHeader>
-                                        <IonCardSubtitle>{note.createdAt}</IonCardSubtitle>
-                                    </IonCardHeader>
-                                    <img src={note.base64Url} alt="image" />
-                                    <IonCardContent>
-                                        {note.content}
-                                    </IonCardContent>
-                                </IonCard>
-                            ))}
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
-            </IonContent>
-        </IonPage>
+        <IonTabs>
+            <IonRouterOutlet id='main'>
+                <IonPage>
+                    <IonHeader>
+                        <IonToolbar>
+                            <IonTitle>Life Notes</IonTitle>
+                        </IonToolbar>
+                    </IonHeader>
+                    <IonContent>
+                        <IonGrid>
+                            <IonRow>
+                                <IonCol id="calenderSection">
+                                    <IonDatetime presentation="date" onIonChange={e => {
+                                        if (typeof e.detail.value === 'string') {
+                                            setSelectedDate(new Date(e.detail.value).toLocaleDateString('en-CA'));
+                                        } else {
+                                            setSelectedDate('');
+                                        }
+                                    }} />
+                                </IonCol>
+                            </IonRow>
+                            <IonRow>
+                                <IonCol>
+                                    {notes.length === 0 && (
+                                        <IonCard>
+                                            <IonCardContent>
+                                                <IonCardTitle>
+                                                    No Notes Found
+                                                </IonCardTitle>
+                                            </IonCardContent>
+                                        </IonCard>
+                                    )}
+                                    {notes.map((note) => (
+                                        <IonCard id="notesToday">
+                                            <IonCardHeader>
+                                                <IonCardSubtitle>{note.createdAt}</IonCardSubtitle>
+                                            </IonCardHeader>
+                                            <img src={note.base64Url} alt="image" />
+                                            <IonCardContent>
+                                                {note.content}
+                                            </IonCardContent>
+                                        </IonCard>
+                                    ))}
+                                </IonCol>
+                            </IonRow>
+                        </IonGrid>
+                    </IonContent>
+                </IonPage>
+            </IonRouterOutlet>
+            <IonTabBar slot='bottom'>
+                <IonTabButton tab="posting" href="/home">
+                    <IonIcon icon={home} />
+                    <IonLabel>Home</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab='calendar' href='/calendar'>
+                    <IonIcon icon={calendar} />
+                    <IonLabel>Calendar</IonLabel>
+                </IonTabButton>
+            </IonTabBar>
+        </IonTabs>
     )
 }
 

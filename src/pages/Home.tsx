@@ -1,6 +1,6 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonPage, IonRow, IonText, IonTextarea, IonTitle, IonToast, IonToolbar } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonLabel, IonPage, IonRouterOutlet, IonRow, IonTabBar, IonTabButton, IonTabs, IonText, IonTextarea, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import './Home.css';
-import { camera, paperPlane, send } from 'ionicons/icons';
+import { calendar, camera, home, paperPlane, send } from 'ionicons/icons';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Directory, Filesystem } from '@capacitor/filesystem';
@@ -106,7 +106,6 @@ const Home: React.FC = () => {
     }
   }, [photoUrl]);
 
-  // make addData to firebase
   const addData = async (url: string) => {
     try {
       const docRef = await addDoc(collection(db, "notes"), {
@@ -124,63 +123,79 @@ const Home: React.FC = () => {
   }
 
   return (
-    <IonPage>
-      <IonToast
-        isOpen={!!toastMessage}
-        message={toastMessage}
-        duration={3000}
-        onDidDismiss={() => setToastMessage('')}
-      />
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonGrid>
-          <IonRow>
-            <IonCol id="sectionTitle">
-              <IonText>Have you track your life today?</IonText>
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol id="inputField">
-              <IonTextarea
-                id='inputText'
-                autoGrow={true}
-                label="How was your day?"
-                labelPlacement="floating"
-                placeholder="Write something..."
-                counter={true}
-                maxlength={1000}
-                counterFormatter={(inputLength, maxLength) => `${maxLength - inputLength} characters remaining`}
-                ref={contentRef}
-              ></IonTextarea>
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol id='photoSection'>
-              <IonCard id='photoCard'>
-                {!takenPhoto && <IonCardContent>No photo selected</IonCardContent>}
-                {takenPhoto && <img src={takenPhoto.preview} alt="Preview" />}
-                <IonButton fill='clear' onClick={takePhotoHandle}>
-                  <IonIcon icon={camera} slot="start" />
-                  Take Photo
-                </IonButton>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol id='postingBtn'>
-              <IonButton onClick={addNotesHandler}>
-                <IonIcon icon={paperPlane} slot="start" />
-                Posting
-              </IonButton>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
+    <IonTabs>
+      <IonRouterOutlet id='main'>
+        <IonPage>
+          <IonToast
+            isOpen={!!toastMessage}
+            message={toastMessage}
+            duration={3000}
+            onDidDismiss={() => setToastMessage('')}
+          />
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Home</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent fullscreen>
+            <IonGrid>
+              <IonRow>
+                <IonCol id="sectionTitle">
+                  <IonText>Have you track your life today?</IonText>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol id="inputField">
+                  <IonTextarea
+                    id='inputText'
+                    autoGrow={true}
+                    label="How was your day?"
+                    labelPlacement="floating"
+                    placeholder="Write something..."
+                    counter={true}
+                    maxlength={1000}
+                    counterFormatter={(inputLength, maxLength) => `${maxLength - inputLength} characters remaining`}
+                    ref={contentRef}
+                  ></IonTextarea>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol id='photoSection'>
+                  <IonCard id='photoCard'>
+                    {!takenPhoto && <IonCardContent>No photo selected</IonCardContent>}
+                    {takenPhoto && <img src={takenPhoto.preview} alt="Preview" />}
+                    <IonButton fill='clear' onClick={takePhotoHandle}>
+                      <IonIcon icon={camera} slot="start" />
+                      Take Photo
+                    </IonButton>
+                  </IonCard>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol id='postingBtn'>
+                  <IonButton onClick={addNotesHandler}>
+                    <IonIcon icon={paperPlane} slot="start" />
+                    Posting
+                  </IonButton>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonContent>
+        </IonPage>
+      </IonRouterOutlet>
+      <IonTabBar slot='bottom'>
+        <IonTabButton tab="posting" href="/home">
+          <IonIcon icon={home} />
+          <IonLabel>Home</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab='calendar' href='/calendar'>
+          <IonIcon icon={calendar} />
+          <IonLabel>Calendar</IonLabel>
+        </IonTabButton>
+      </IonTabBar>
+    </IonTabs>
+
+
   );
 };
 
