@@ -1,29 +1,50 @@
 import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonLabel, IonPage, IonRow, IonText, IonTitle, IonToast, IonToolbar } from "@ionic/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // importing style 
 import './Login.css';
 
 import { loginUser } from "./firebaseConfig";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [toastMessage, setToastMessage] = useState('');
+    const [loginClicked, setLoginClicked] = useState(false);
 
-    async function login() {
-        try {
-            const res = await loginUser(email, password);
-            if (!res) {
-                setToastMessage('Error logging in with your credentials');
-            } else {
-                setToastMessage('Welcome to Life Notes!');
+    // make the email and password input using useRef not useState
+    const emailRef = useRef<HTMLIonInputElement>(null);
+    const passwordRef = useRef<HTMLIonInputElement>(null);
+
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (!user && loginClicked) {
+                try {
+                    const res = await loginUser(emailRef.current?.value?.toString() || '', passwordRef.current?.value?.toString() || '');
+                    if (!res) {
+                        setToastMessage('Error logging in with your credentials');
+                    } else {
+                        setToastMessage('Welcome to Life Notes!');
+                    }
+                    passwordRef.current!.value = '';
+                    emailRef.current!.value = '';
+                } catch (error) {
+                    setToastMessage((error as Error).message);
+                }
+                setLoginClicked(false); // Reset loginClicked after attempting to log in
             }
-        } catch (error) {
-            setToastMessage((error as Error).message);
-        }
-    }
+        });
+
+        // Clean up the listener when the component unmounts
+        return () => unsubscribe();
+    }, [loginClicked]);
+
+    const login = () => {
+        setLoginClicked(true);
+    };
 
     return (
         <IonPage>
@@ -38,18 +59,20 @@ const Login: React.FC = () => {
                     <IonCol id="input">
                         <IonItem>
                             <IonInput
+                                ref={emailRef}
                                 label="Email"
                                 labelPlacement="floating"
                                 placeholder="Email"
-                                onIonChange={(e: any) => setEmail(e.target.value)}></IonInput>
+                                onChange={(e: any) => setEmail(e.target.value)}></IonInput>
                         </IonItem>
                         <IonItem>
                             <IonInput
+                                ref={passwordRef}
                                 label="Password"
                                 type="password"
                                 labelPlacement="floating"
                                 placeholder="Password"
-                                onIonChange={(e: any) => setPassword(e.target.value)}></IonInput>
+                                onChange={(e: any) => setPassword(e.target.value)}></IonInput>
                         </IonItem>
                     </IonCol>
                 </IonRow>

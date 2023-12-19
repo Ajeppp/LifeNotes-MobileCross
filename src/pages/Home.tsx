@@ -38,17 +38,22 @@ const Home: React.FC = () => {
   const notesCtx = useContext(DatasContext);
   const history = useHistory();
 
+  // Get a Firestore instance
   const db = getFirestore();
 
+  // Get today's date
   const date = new Date().toLocaleDateString('en-CA');
 
+  // Take photo
   const [takenPhoto, setTakenPhoto] = useState<{
     path: string | undefined;
     preview: string;
   }>();
 
+  // Get textarea value
   const contentRef = useRef<HTMLIonTextareaElement>(null);
 
+  // This is for taking photo
   const takePhotoHandle = async () => {
     try {
       const photo = await Camera.getPhoto({
@@ -79,6 +84,7 @@ const Home: React.FC = () => {
     }
   };
 
+  // Add notes to the context
   const addNotesHandler = async () => {
     if (!contentRef.current?.value || !takenPhoto) {
       setToastMessage('Please enter a valid text and photo!');
@@ -99,31 +105,37 @@ const Home: React.FC = () => {
     });
     notesCtx.addNote(fileName, base64, enteredText.toString(), date);
     history.length > 0 ? history.goBack() : history.replace("/home");
+    setTakenPhoto(undefined);
+    history.push('/calendar');
   }
 
+  // Add notes to the database
   useEffect(() => {
     if (photoUrl) {
       addData(photoUrl);
-      console.log('photoUrl: ', photoUrl);
+      contentRef.current!.value = '';
     }
   }, [photoUrl]);
 
+  // get the uID
+  const uID = getAuth().currentUser?.uid;
+
+  // Add a new document with a generated id.
   const addData = async (url: string) => {
     try {
       const docRef = await addDoc(collection(db, "notes"), {
         content: contentRef.current?.value,
         createdAt: date,
-        base64Url: url
+        base64Url: url,
+        uID: uID
       });
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
-    contentRef.current!.value = '';
-    setTakenPhoto(undefined);
-    history.push('/calendar');
   }
 
+  // Logout function
   const logout = async () => {
     const auth = getAuth();
     try {

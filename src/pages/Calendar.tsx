@@ -9,9 +9,10 @@ import DatasContext from "../data/data-context";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { addDoc, collection, getDocs, getFirestore, onSnapshot } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore, onSnapshot, query, where } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import TabBar from "./TabBar";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyABgQw6IggVJbEZP4elv685Xm8JjS5fQ-o",
@@ -35,6 +36,7 @@ type Note = {
     createdAt: string;
 }
 
+
 const Calendar: React.FC = () => {
     const today = new Date().toLocaleDateString('en-CA');
 
@@ -43,6 +45,7 @@ const Calendar: React.FC = () => {
     const db = getFirestore();
     const [dbUpdated, setDbUpdated] = useState<boolean>(false);
 
+    // Update the notes when the database is updated
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, 'notes'), () => {
             setDbUpdated(prevState => !prevState);
@@ -51,11 +54,14 @@ const Calendar: React.FC = () => {
         return () => unsubscribe();
     }, [db]);
 
+    // get the uID
+    const uID = getAuth().currentUser?.uid;
 
     useEffect(() => {
         const fetchNotes = async () => {
             const notesCollection = collection(db, 'notes');
-            const notesSnapshot = await getDocs(notesCollection);
+            const q = query(notesCollection, where("uID", "==", uID));
+            const notesSnapshot = await getDocs(q);
             const notesData: Note[] = [];
             notesSnapshot.forEach((noteDoc) => {
                 const noteData = noteDoc.data();
@@ -70,7 +76,7 @@ const Calendar: React.FC = () => {
             setNotes(notesData.filter((note) => note.createdAt === selectedDate));
         }
         fetchNotes();
-    }, [dbUpdated, selectedDate]);
+    }, [dbUpdated, selectedDate, uID]);
 
     return (
         <IonPage>
