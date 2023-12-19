@@ -72,7 +72,6 @@ const Calendar: React.FC = () => {
                     createdAt: noteData.createdAt
                 });
             });
-            console.log("Tanggal: ", selectedDate);
             setNotes(notesData.filter((note) => note.createdAt === selectedDate));
         }
         fetchNotes();

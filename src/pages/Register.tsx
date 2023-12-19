@@ -27,11 +27,8 @@ const Register: React.FC = () => {
 
     const validate = (e: Event) => {
         const value = (e.target as HTMLInputElement).value;
-
         setIsValid(undefined);
-
         if (value === '') return;
-
         validateEmail(value) !== null ? setIsValid(true) : setIsValid(false);
     };
 
@@ -50,11 +47,8 @@ const Register: React.FC = () => {
 
     const validatePass = (e: Event) => {
         const value = (e.target as HTMLInputElement).value;
-
         setIsValidPass(undefined);
-
         if (value === '') return;
-
         validatePassword(value) !== null ? setIsValidPass(true) : setIsValidPass(false);
     };
 
@@ -72,11 +66,8 @@ const Register: React.FC = () => {
 
     const validateCon = (e: Event) => {
         const value = (e.target as HTMLInputElement).value;
-
         setIsValidConfirm(undefined);
-
         if (value === '') return;
-
         validateConfirm(value) !== null ? setIsValidConfirm(true) : setIsValidConfirm(false);
     };
 
@@ -96,7 +87,6 @@ const Register: React.FC = () => {
             return
         }
         const res = await registerUser(email, password)
-        console.log(res)
         if (res) {
             setToastMessage('You have registered successfully!')
         } else {

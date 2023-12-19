@@ -16,14 +16,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 export const loginUser = async (email: string, password: string) => {
-  console.log(password)
   const auth = getAuth();
   try {
     const res = await signInWithEmailAndPassword(auth, email, password);
-    console.log(res);
     return true;
   } catch (error: any) {
-    console.error(error);
     return false;
   }
 }
@@ -31,7 +28,6 @@ export const loginUser = async (email: string, password: string) => {
 export async function registerUser(email: string, password: string) {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(res);
     return true;
   } catch (error) {
     return false;

@@ -30,6 +30,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useHistory } from 'react-router-dom';
+import LoadingPage from './pages/LoadingPage';
 
 setupIonicReact();
 
@@ -46,12 +47,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log('Auth state changed detected!')
       if (user) {
-        console.log('User is logged in!');
         history.push('/home');
       } else {
-        console.log('User is not logged in!');
         if (history.location.pathname !== '/register' && history.location.pathname !== '/login') {
           history.push('/login');
         }
@@ -62,7 +60,7 @@ const App: React.FC = () => {
   }, [history]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
 
   return (

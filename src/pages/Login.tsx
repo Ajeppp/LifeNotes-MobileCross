@@ -9,8 +9,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [toastMessage, setToastMessage] = useState('');
     const [loginClicked, setLoginClicked] = useState(false);
 
@@ -62,8 +60,7 @@ const Login: React.FC = () => {
                                 ref={emailRef}
                                 label="Email"
                                 labelPlacement="floating"
-                                placeholder="Email"
-                                onChange={(e: any) => setEmail(e.target.value)}></IonInput>
+                                placeholder="Email"></IonInput>
                         </IonItem>
                         <IonItem>
                             <IonInput
@@ -71,8 +68,7 @@ const Login: React.FC = () => {
                                 label="Password"
                                 type="password"
                                 labelPlacement="floating"
-                                placeholder="Password"
-                                onChange={(e: any) => setPassword(e.target.value)}></IonInput>
+                                placeholder="Password"></IonInput>
                         </IonItem>
                     </IonCol>
                 </IonRow>

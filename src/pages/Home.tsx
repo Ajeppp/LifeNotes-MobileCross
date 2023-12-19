@@ -14,6 +14,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
 import TabBar from './TabBar';
 import { getAuth, signOut } from '@firebase/auth';
+import LoadingPage from './LoadingPage';
 
 
 const firebaseConfig = {
@@ -35,6 +36,7 @@ const storage = getStorage(app);
 const Home: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>();
   const [photoUrl, setPhotoUrl] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const notesCtx = useContext(DatasContext);
   const history = useHistory();
 
@@ -104,7 +106,9 @@ const Home: React.FC = () => {
       directory: Directory.Data
     });
     notesCtx.addNote(fileName, base64, enteredText.toString(), date);
-    history.length > 0 ? history.goBack() : history.replace("/home");
+    // history.length > 0 ? history.goBack() : history.replace("/home");
+    setContent(contentRef.current!.value);
+    contentRef.current!.value = '';
     setTakenPhoto(undefined);
     history.push('/calendar');
   }
@@ -113,7 +117,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (photoUrl) {
       addData(photoUrl);
-      contentRef.current!.value = '';
+      setContent('');
     }
   }, [photoUrl]);
 
@@ -124,12 +128,11 @@ const Home: React.FC = () => {
   const addData = async (url: string) => {
     try {
       const docRef = await addDoc(collection(db, "notes"), {
-        content: contentRef.current?.value,
+        content: content,
         createdAt: date,
         base64Url: url,
         uID: uID
       });
-      console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
