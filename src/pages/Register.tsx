@@ -99,7 +99,6 @@ const Register: React.FC = () => {
         console.log(res)
         if (res) {
             setToastMessage('You have registered successfully!')
-            history.push('/login')
         } else {
             setToastMessage('Error registering your account')
         }

@@ -40,8 +40,6 @@ const App: React.FC = () => {
     initContext();
   }, [initContext]);
 
-  const location = window.location.pathname;
-
   const [loading, setLoading] = useState(true);
   const auth = getAuth();
   const history = useHistory();
